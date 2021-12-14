@@ -1,0 +1,46 @@
+service: serverless-lambda-puppeteer
+frameworkVersion: '2'
+
+plugins:
+    - serverless-layers
+    - serverless-prune-plugin
+
+package:
+    patterns:
+        - '!**'
+        - src/**
+
+custom:
+    defaultStage: local
+    envfile:
+        environment:
+            local: ${file(./env/env.local.yml)}
+            dev: ${file(./env/env.dev.yml)}
+            production: ${file(./env/env.production.yml)}
+    serverless-layers:
+        functions: # optional
+            - sampleHandler
+        dependenciesPath: ./package.json
+        layersDeploymentBucket: ${self:custom.envfile.environment.${self:provider.stage}.layersDeploymentBucket}
+    prune:
+        automatic: true
+        number: 10
+
+provider:
+    name: aws
+    runtime: nodejs14.x
+    region: ap-northeast-1
+    stage: ${opt:stage, self:custom.defaultStage}
+    stackName: ${opt:stage, self:custom.defaultStage}-serverless-lambda-puppeteer
+    deploymentBucket: ${self:custom.envfile.environment.${self:provider.stage}.deploymentBucket}
+    lambdaHashingVersion: 20201221
+    logRetentionInDays: 90
+
+functions:
+    sampleHandler:
+        name: ${opt:stage, self:custom.defaultStage}-serverless-lambda-puppeteer
+        handler: src/handler.sampleHandler
+        timeout: 900
+        memorySize: 512
+        environment:
+            EXECUTE_HEADLESS: ${self:custom.envfile.environment.${self:provider.stage}.executeHeadless}

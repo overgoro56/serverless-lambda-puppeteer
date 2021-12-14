@@ -1,0 +1,21 @@
+{
+    "name": "serverless-lambda-puppeteer",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "deploy-dev": "AWS_SDK_LOAD_CONFIG=1 sls deploy -v --stage dev",
+        "deploy-production": "AWS_SDK_LOAD_CONFIG=1 sls deploy -v --stage production",
+        "sls-invoke-local": "sls invoke local -f"
+    },
+    "author": "",
+    "dependencies": {
+        "chrome-aws-lambda": "^10.1.0",
+        "puppeteer": "^13.0.0"
+    },
+    "devDependencies": {
+        "prettier": "^2.5.1",
+        "serverless": "^2.69.0",
+        "serverless-layers": "^2.5.1",
+        "serverless-prune-plugin": "^1.6.1"
+    }
+}
